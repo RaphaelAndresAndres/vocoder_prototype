@@ -8,7 +8,7 @@
 #include "AudioMethods.h"
 
 #define SAMPLE_RATE 44100
-#define FRAMES_PER_BUFFER 512
+#define FRAMES_PER_BUFFER 4096
 
 #ifndef M_PI
 #define M_PI 3.141592653
@@ -40,12 +40,13 @@ static int WaveCallback(const void *inputBuffer,
         float val = 0.5 * sinf(phase);
         *out++ = val;
         *out++ = val;
-        *in++ = val;
+        //*in++ = val;
         phase += frequency * coeff;
         if (phase > 2 * M_PI)
             phase -= 2 * M_PI;
     }
     in = (float *)inputBuffer;
+    out = (float *)outputBuffer;
     runFFT(in, out);
     return paContinue;
 }
@@ -55,8 +56,17 @@ void runFFT(float *in, float *out)
     fftwf_execute(PlanForward);
     for (int i = 0; i < FRAMES_PER_BUFFER / 2 + 1; ++i)
     {
+        FFTOut[i][0] /= (float)FRAMES_PER_BUFFER;
+        FFTOut[i][1] /= (float)FRAMES_PER_BUFFER;
         Amplitudes[i] = sqrtf(FFTOut[i][0] * FFTOut[i][0] + FFTOut[i][1] * FFTOut[i][1]);
+        FFTOut[i][0] = 0;
+        FFTOut[i][1] = 0;
     }
+    FFTOut[41][0] = 0;
+    FFTOut[41][1] = 0;
+
+    fftwf_execute(PlanBackward);
+    memcpy(out, staticOutputBuffer, FRAMES_PER_BUFFER * sizeof(float));
 }
 void *initMidi(void *arg)
 {
@@ -91,6 +101,7 @@ void *initMidi(void *arg)
 void initFFT()
 {
     PlanForward = fftwf_plan_dft_r2c_1d(FRAMES_PER_BUFFER, staticInputBuffer, FFTOut, FFTW_MEASURE);
+    PlanBackward = fftwf_plan_dft_c2r_1d(FRAMES_PER_BUFFER, FFTOut, staticOutputBuffer, FFTW_MEASURE);
 }
 void initAudioDevice()
 {
