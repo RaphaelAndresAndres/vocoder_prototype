@@ -8,7 +8,7 @@
 
 #define WIDTH 1500
 #define HEIGHT 900
-#define FRAMES_PER_BUFFER 512
+#define FRAMES_PER_BUFFER 2048
 
 GLuint shaderProgram;
 
@@ -87,7 +87,7 @@ void draw(float time, float *source)
         float t = log((float)i + 1) / logf(numPoints + 1);
         float x = t * 2 * limits - limits;
         waveVertices[2 * i] = x;
-        waveVertices[2 * i + 1] = source[i] / (float)FRAMES_PER_BUFFER;
+        waveVertices[2 * i + 1] = source[i] * 5.;
     }
 
     GLuint VBO[numElements], VAO[numElements];

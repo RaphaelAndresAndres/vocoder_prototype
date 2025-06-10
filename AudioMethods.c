@@ -8,7 +8,7 @@
 #include "AudioMethods.h"
 
 #define SAMPLE_RATE 44100
-#define FRAMES_PER_BUFFER 4096
+#define FRAMES_PER_BUFFER 2048
 
 #ifndef M_PI
 #define M_PI 3.141592653
@@ -38,17 +38,22 @@ static int WaveCallback(const void *inputBuffer,
     runFFT(in, out);
     return paContinue;
 }
+
 void runFFT(float *in, float *out)
 {
     memcpy(staticInputBuffer, in, FRAMES_PER_BUFFER * sizeof(float));
     fftwf_execute(PlanForward);
     for (int i = 0; i < FRAMES_PER_BUFFER / 2 + 1; ++i)
     {
-        Amplitudes[i] = sqrtf(FFTOut[i][0] * FFTOut[i][0] + FFTOut[i][1] * FFTOut[i][1]);
+        Amplitudes[i] = sqrtf(FFTOut[i][0] * FFTOut[i][0] + FFTOut[i][1] * FFTOut[i][1]) / (float)FRAMES_PER_BUFFER;
     }
 
-    // fftwf_execute(PlanBackward);
-    // memcpy(out, staticOutputBuffer, FRAMES_PER_BUFFER * sizeof(float));
+    fftwf_execute(PlanBackward);
+    for (int i = 0; i < FRAMES_PER_BUFFER; ++i)
+    {
+        staticOutputBuffer[i] /= (float)FRAMES_PER_BUFFER;
+    }
+    memcpy(out, staticOutputBuffer, FRAMES_PER_BUFFER * sizeof(float));
 }
 void *initMidi(void *arg)
 {
