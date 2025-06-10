@@ -8,7 +8,7 @@
 #include "AudioMethods.h"
 
 #define SAMPLE_RATE 44100
-#define FRAMES_PER_BUFFER 512
+#define FRAMES_PER_BUFFER 2048
 
 #ifndef M_PI
 #define M_PI 3.141592653
