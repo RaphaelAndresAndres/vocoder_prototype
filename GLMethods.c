@@ -8,7 +8,7 @@
 
 #define WIDTH 1500
 #define HEIGHT 900
-#define FRAMES_PER_BUFFER 2048
+#define FRAMES_PER_BUFFER 512
 
 GLuint shaderProgram;
 

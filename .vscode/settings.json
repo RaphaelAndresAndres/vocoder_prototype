@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "format": "c"
+        "format": "c",
+        "audiomethods.h": "c"
     }
 }
