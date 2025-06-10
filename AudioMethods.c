@@ -25,13 +25,17 @@ PaStream *stream;
 float phase = 0;
 float frequency = 440.;
 
-static int WaveCallback(const void *inputBuffer,
-                        void *outputBuffer,
-                        unsigned long framesPerBuffer,
-                        const PaStreamCallbackTimeInfo *timeInfo,
-                        PaStreamCallbackFlags statusFlags,
-                        void *userData)
+int WaveCallback(const void *inputBuffer,
+                 void *outputBuffer,
+                 unsigned long framesPerBuffer,
+                 const PaStreamCallbackTimeInfo *timeInfo,
+                 PaStreamCallbackFlags statusFlags,
+                 void *userData)
 {
+    (void)framesPerBuffer;
+    (void)timeInfo;
+    (void)statusFlags;
+    (void)userData;
     float *in = (float *)inputBuffer;
     float *out = (float *)outputBuffer;
 
@@ -57,6 +61,7 @@ void runFFT(float *in, float *out)
 }
 void *initMidi(void *arg)
 {
+    (void)arg;
     printf("Setting up midi device...\n");
     Pm_Initialize();
     PmStream *midi_stream;
@@ -74,12 +79,12 @@ void *initMidi(void *arg)
             {
                 printf("Note pressed: %i\n", buffer[i].message & 0xFF);
                 continue;
-                if ((buffer[i].message & 0xFF) == 144)
+                /*if ((buffer[i].message & 0xFF) == 144)
                     ;
                 // addKey(buffer[i].message);
                 if ((buffer[i].message & 0xFF) == 128)
                     ;
-                // removeKey(buffer[i].message);
+                // removeKey(buffer[i].message);*/
             }
         }
         Pa_Sleep(10);

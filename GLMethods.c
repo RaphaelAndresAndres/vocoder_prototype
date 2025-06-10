@@ -14,6 +14,7 @@ GLuint shaderProgram;
 
 void error_callback(int error, const char *description)
 {
+    (void)error;
     fprintf(stderr, "Error: %s\n", description);
 }
 
@@ -52,7 +53,7 @@ GLuint loadShader(const char *filePath, GLenum shaderType)
     return shader;
 }
 
-void draw(float time, float *source)
+void draw(float *source)
 {
     const float limits = 0.92;
     const int numElements = 3;
@@ -140,8 +141,7 @@ void *initGL(void *arg)
         glClear(GL_COLOR_BUFFER_BIT);
         glUseProgram(shaderProgram);
 
-        float time = (float)glfwGetTime();
-        draw(time, staticOutputBuffer);
+        draw(staticOutputBuffer);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
