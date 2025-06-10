@@ -84,9 +84,10 @@ void draw(float time, float *source)
 
     for (int i = 0; i < numPoints; ++i)
     {
-        float x = log((float)i / (float)numPoints) * 2 * limits - limits;
+        float t = log((float)i + 1) / logf(numPoints + 1);
+        float x = t * 2 * limits - limits;
         waveVertices[2 * i] = x;
-        waveVertices[2 * i + 1] = source[i] / FRAMES_PER_BUFFER;
+        waveVertices[2 * i + 1] = source[i] / (float)FRAMES_PER_BUFFER;
     }
 
     GLuint VBO[numElements], VAO[numElements];
