@@ -86,7 +86,7 @@ void draw(float time, float *source)
     {
         float x = log((float)i / (float)numPoints) * 2 * limits - limits;
         waveVertices[2 * i] = x;
-        waveVertices[2 * i + 1] = source[i] / 300;
+        waveVertices[2 * i + 1] = source[i] / FRAMES_PER_BUFFER;
     }
 
     GLuint VBO[numElements], VAO[numElements];

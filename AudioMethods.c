@@ -37,8 +37,8 @@ static int WaveCallback(const void *inputBuffer,
     float coeff = 2 * M_PI / SAMPLE_RATE;
     for (int i = 0; i < FRAMES_PER_BUFFER; ++i)
     {
+        break;
         float val = 0.5 * sinf(phase);
-        *out++ = val;
         *out++ = val;
         //*in++ = val;
         phase += frequency * coeff;
@@ -56,17 +56,11 @@ void runFFT(float *in, float *out)
     fftwf_execute(PlanForward);
     for (int i = 0; i < FRAMES_PER_BUFFER / 2 + 1; ++i)
     {
-        FFTOut[i][0] /= (float)FRAMES_PER_BUFFER;
-        FFTOut[i][1] /= (float)FRAMES_PER_BUFFER;
         Amplitudes[i] = sqrtf(FFTOut[i][0] * FFTOut[i][0] + FFTOut[i][1] * FFTOut[i][1]);
-        FFTOut[i][0] = 0;
-        FFTOut[i][1] = 0;
     }
-    FFTOut[41][0] = 0;
-    FFTOut[41][1] = 0;
 
-    fftwf_execute(PlanBackward);
-    memcpy(out, staticOutputBuffer, FRAMES_PER_BUFFER * sizeof(float));
+    // fftwf_execute(PlanBackward);
+    // memcpy(out, staticOutputBuffer, FRAMES_PER_BUFFER * sizeof(float));
 }
 void *initMidi(void *arg)
 {
@@ -108,7 +102,7 @@ void initAudioDevice()
     Pa_Initialize();
     Pa_OpenDefaultStream(&stream,
                          1,
-                         2,
+                         1,
                          paFloat32,
                          SAMPLE_RATE,
                          FRAMES_PER_BUFFER,
