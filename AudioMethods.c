@@ -34,19 +34,7 @@ static int WaveCallback(const void *inputBuffer,
 {
     float *in = (float *)inputBuffer;
     float *out = (float *)outputBuffer;
-    float coeff = 2 * M_PI / SAMPLE_RATE;
-    for (int i = 0; i < FRAMES_PER_BUFFER; ++i)
-    {
-        break;
-        float val = 0.5 * sinf(phase);
-        *out++ = val;
-        //*in++ = val;
-        phase += frequency * coeff;
-        if (phase > 2 * M_PI)
-            phase -= 2 * M_PI;
-    }
-    in = (float *)inputBuffer;
-    out = (float *)outputBuffer;
+
     runFFT(in, out);
     return paContinue;
 }
