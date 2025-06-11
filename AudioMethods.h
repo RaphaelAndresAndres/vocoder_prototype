@@ -15,4 +15,6 @@ int WaveCallback(const void *inputBuffer,
                  const PaStreamCallbackTimeInfo *timeInfo,
                  PaStreamCallbackFlags statusFlags,
                  void *userData);
+void addKey(float freq, float volume);
+float filterFreq(float freq);
 #endif

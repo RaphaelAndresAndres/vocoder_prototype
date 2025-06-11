@@ -9,7 +9,7 @@
 
 #define SAMPLE_RATE 44100
 #define FRAMES_PER_BUFFER 2048
-
+#define MAX_KEYS 10
 #ifndef M_PI
 #define M_PI 3.141592653
 #endif
@@ -24,6 +24,7 @@ static float Amplitudes[FRAMES_PER_BUFFER / 2 + 1];
 PaStream *stream;
 float phase = 0;
 float frequency = 440.;
+float keyFrequencies[MAX_KEYS];
 
 int WaveCallback(const void *inputBuffer,
                  void *outputBuffer,
@@ -43,12 +44,34 @@ int WaveCallback(const void *inputBuffer,
     return paContinue;
 }
 
+float filterFreq(float freq)
+{
+    float lowerCutOff = 15.;
+    float lowerMax = 50.;
+    float upperMax = 10000;
+    float upperCutOff = 15000;
+    if (freq < lowerCutOff)
+        return 0.;
+    else if (freq < lowerMax)
+        return (freq - lowerCutOff) / (lowerMax - lowerCutOff);
+    else if (freq < upperMax)
+        return 1.;
+    else if (freq < upperCutOff)
+        return -(freq - upperMax) / (upperCutOff - upperMax) + 1.;
+    return 0.;
+}
+
 void runFFT(float *in, float *out)
 {
     memcpy(staticInputBuffer, in, FRAMES_PER_BUFFER * sizeof(float));
     fftwf_execute(PlanForward);
+    float k = (float)SAMPLE_RATE / (float)FRAMES_PER_BUFFER;
     for (int i = 0; i < FRAMES_PER_BUFFER / 2 + 1; ++i)
     {
+        float freq = k * (float)i;
+        float curVolume = filterFreq(freq);
+        FFTOut[i][0] *= curVolume;
+        FFTOut[i][1] *= curVolume;
         Amplitudes[i] = sqrtf(FFTOut[i][0] * FFTOut[i][0] + FFTOut[i][1] * FFTOut[i][1]) / (float)FRAMES_PER_BUFFER;
     }
 
@@ -57,8 +80,15 @@ void runFFT(float *in, float *out)
     {
         staticOutputBuffer[i] /= (float)FRAMES_PER_BUFFER;
     }
-    memcpy(out, staticOutputBuffer, FRAMES_PER_BUFFER * sizeof(float));
+    // memcpy(out, staticOutputBuffer, FRAMES_PER_BUFFER * sizeof(float));
 }
+
+void addKey(float freq, float volume)
+{
+
+    printf("%f, %f\n", freq, volume);
+}
+
 void *initMidi(void *arg)
 {
     (void)arg;
@@ -77,24 +107,22 @@ void *initMidi(void *arg)
         {
             for (int i = 0; i < num_events; i++)
             {
-                printf("Note pressed: %i\n", buffer[i].message & 0xFF);
-                continue;
-                /*if ((buffer[i].message & 0xFF) == 144)
-                    ;
-                // addKey(buffer[i].message);
-                if ((buffer[i].message & 0xFF) == 128)
-                    ;
-                // removeKey(buffer[i].message);*/
+                float frequency = 27.5f * pow(2.f, (float)(((buffer[i].message >> 8) & 0xFF) - 21) / 12.);
+                float volume = (float)((buffer[i].message >> 16) & 0xFF) / 128.;
+                if ((buffer[i].message & 0xFF) == 144)
+                    addKey(frequency, volume);
             }
         }
         Pa_Sleep(10);
     }
 }
+
 void initFFT()
 {
     PlanForward = fftwf_plan_dft_r2c_1d(FRAMES_PER_BUFFER, staticInputBuffer, FFTOut, FFTW_MEASURE);
     PlanBackward = fftwf_plan_dft_c2r_1d(FRAMES_PER_BUFFER, FFTOut, staticOutputBuffer, FFTW_MEASURE);
 }
+
 void initAudioDevice()
 {
     Pa_Initialize();
@@ -109,6 +137,7 @@ void initAudioDevice()
     Pa_StartStream(stream);
     printf("\e[1;1H\e[2J");
 }
+
 void terminateAudio()
 {
     Pa_StopStream(stream);
@@ -116,6 +145,7 @@ void terminateAudio()
     Pa_Terminate();
     printf("Audio has been terminated successfully.\n");
 }
+
 float *initAudio()
 {
     initFFT();

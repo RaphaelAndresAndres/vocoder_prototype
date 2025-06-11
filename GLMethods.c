@@ -99,7 +99,7 @@ void draw(float *source)
         waveVertices[2 * i] = x;
         waveVertices[2 * i + 1] = source[i] * 5.;
     }
-    printf("Maximum frequency: %f\n", k * (float)maxIndex);
+    // printf("Maximum frequency: %f\n", k * (float)maxIndex);
     GLuint VBO[numElements], VAO[numElements];
     glGenVertexArrays(numElements, VAO);
     glGenBuffers(numElements, VBO);

@@ -1,6 +1,9 @@
 {
     "files.associations": {
         "format": "c",
-        "audiomethods.h": "c"
+        "audiomethods.h": "c",
+        "system_error": "c",
+        "cmath": "c",
+        "complex": "c"
     }
 }
