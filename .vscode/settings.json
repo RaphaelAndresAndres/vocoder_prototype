@@ -4,6 +4,8 @@
         "audiomethods.h": "c",
         "system_error": "c",
         "cmath": "c",
-        "complex": "c"
+        "complex": "c",
+        "fftw3.h": "c",
+        "portaudio.h": "c"
     }
 }

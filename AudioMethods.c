@@ -66,6 +66,7 @@ void runFFT(float *in, float *out)
     memcpy(staticInputBuffer, in, FRAMES_PER_BUFFER * sizeof(float));
     fftwf_execute(PlanForward);
     float k = (float)SAMPLE_RATE / (float)FRAMES_PER_BUFFER;
+    float s = 0;
     for (int i = 0; i < FRAMES_PER_BUFFER / 2 + 1; ++i)
     {
         float freq = k * (float)i;
@@ -73,8 +74,9 @@ void runFFT(float *in, float *out)
         FFTOut[i][0] *= curVolume;
         FFTOut[i][1] *= curVolume;
         Amplitudes[i] = sqrtf(FFTOut[i][0] * FFTOut[i][0] + FFTOut[i][1] * FFTOut[i][1]) / (float)FRAMES_PER_BUFFER;
+        s += Amplitudes[i];
     }
-
+    printf("%f\n", s);
     fftwf_execute(PlanBackward);
     for (int i = 0; i < FRAMES_PER_BUFFER; ++i)
     {
