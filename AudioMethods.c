@@ -67,22 +67,27 @@ void runFFT(float *in, float *out)
     fftwf_execute(PlanForward);
     float k = (float)SAMPLE_RATE / (float)FRAMES_PER_BUFFER;
     float s = 0;
-    for (int i = 0; i < FRAMES_PER_BUFFER / 2 + 1; ++i)
+    FFTOut[0][0] = 0;
+    FFTOut[0][1] = 0;
+    for (int i = 1; i < FRAMES_PER_BUFFER / 2 + 1; ++i)
     {
         float freq = k * (float)i;
         float curVolume = filterFreq(freq);
         FFTOut[i][0] *= curVolume;
         FFTOut[i][1] *= curVolume;
+        // FFTOut[i - 1][0] = FFTOut[i][0];
+        // FFTOut[i - 1][1] = FFTOut[i][1];
+
         Amplitudes[i] = sqrtf(FFTOut[i][0] * FFTOut[i][0] + FFTOut[i][1] * FFTOut[i][1]) / (float)FRAMES_PER_BUFFER;
         s += Amplitudes[i];
     }
-    printf("%f\n", s);
+    // printf("%f\n", s);
     fftwf_execute(PlanBackward);
     for (int i = 0; i < FRAMES_PER_BUFFER; ++i)
     {
         staticOutputBuffer[i] /= (float)FRAMES_PER_BUFFER;
     }
-    // memcpy(out, staticOutputBuffer, FRAMES_PER_BUFFER * sizeof(float));
+    memcpy(out, staticOutputBuffer, FRAMES_PER_BUFFER * sizeof(float));
 }
 
 void addKey(float freq, float volume)

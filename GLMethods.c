@@ -87,6 +87,7 @@ void draw(float *source)
     int maxIndex = 0;
     float maxAmplitude = 0.;
     float k = (float)SAMPLE_RATE / (float)FRAMES_PER_BUFFER;
+
     for (int i = 0; i < numPoints; ++i)
     {
         if (source[i] > maxAmplitude)
