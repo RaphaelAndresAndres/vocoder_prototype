@@ -84,23 +84,13 @@ void draw(float *source)
     sizes[2] = sizeof(yAxisVertices);
     nums[2] = 2;
 
-    int maxIndex = 0;
-    float maxAmplitude = 0.;
-    float k = (float)SAMPLE_RATE / (float)FRAMES_PER_BUFFER;
-
     for (int i = 0; i < numPoints; ++i)
     {
-        if (source[i] > maxAmplitude)
-        {
-            maxAmplitude = source[i];
-            maxIndex = i;
-        }
         float t = log((float)i + 1) / logf(numPoints + 1);
         float x = t * 2 * limits - limits;
         waveVertices[2 * i] = x;
-        waveVertices[2 * i + 1] = source[i] * 5.;
+        waveVertices[2 * i + 1] = sqrt(source[i] / (float)FRAMES_PER_BUFFER) / 10.;
     }
-    // printf("Maximum frequency: %f\n", k * (float)maxIndex);
     GLuint VBO[numElements], VAO[numElements];
     glGenVertexArrays(numElements, VAO);
     glGenBuffers(numElements, VBO);

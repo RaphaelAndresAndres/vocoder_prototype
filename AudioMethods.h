@@ -1,5 +1,6 @@
 #include <portaudio.h>
 #include <portmidi.h>
+#include <fftw3.h>
 
 #ifndef AUDIO_FUNCTIONS_H_INCLUDED
 #define AUDIO_FUNCTIONS_H_INCLUDED
@@ -17,4 +18,5 @@ int WaveCallback(const void *inputBuffer,
                  void *userData);
 void addKey(float freq, float volume);
 float filterFreq(float freq);
+void shiftFreq(float freq);
 #endif
