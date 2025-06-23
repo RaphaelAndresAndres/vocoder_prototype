@@ -6,6 +6,8 @@
         "cmath": "c",
         "complex": "c",
         "fftw3.h": "c",
-        "portaudio.h": "c"
+        "portaudio.h": "c",
+        "1.C": "cpp",
+        "glmethods.h": "c"
     }
 }

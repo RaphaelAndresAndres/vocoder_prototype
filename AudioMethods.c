@@ -60,7 +60,8 @@ void shiftFreq(float freq)
         float v = (float)i * maxFreq / freq;
         int lower = (int)floor(v);
         int upper = (int)ceil(v);
-
+        if (lower > (FRAMES_PER_BUFFER / 2))
+            break;
         if (lower == upper)
         {
 
@@ -96,8 +97,8 @@ float filterFreq(float freq)
 {
     float lowerCutOff = 15.;
     float lowerMax = 50.;
-    float upperMax = 10000;
-    float upperCutOff = 15000;
+    float upperMax = 3000;
+    float upperCutOff = 4000;
     if (freq < lowerCutOff)
         return 0.;
     else if (freq < lowerMax)

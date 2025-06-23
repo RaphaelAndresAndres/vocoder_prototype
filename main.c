@@ -2,7 +2,7 @@
 #include <pthread.h>
 
 // run with
-// gcc -o testing testing.c GLMethods.c AudioMethods.c -lGL -lm -lglfw -lGLEW -lportaudio -lportmidi -lfftw3f -O3 -march=native
+// gcc -o main main.c GLMethods.c AudioMethods.c -lGL -lm -lglfw -lGLEW -lportaudio -lportmidi -lfftw3f -O3 -march=native
 #include "GLMethods.h"
 #include "AudioMethods.h"
 
