@@ -1,7 +1,7 @@
 #include <portaudio.h>
 #include <portmidi.h>
 #include <fftw3.h>
-
+// header file for audio functions
 #ifndef AUDIO_FUNCTIONS_H_INCLUDED
 #define AUDIO_FUNCTIONS_H_INCLUDED
 void *initMidi(void *);

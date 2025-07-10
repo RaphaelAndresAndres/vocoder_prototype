@@ -29,6 +29,7 @@ float keyFrequencies[MAX_KEYS];
 
 void shiftFreq(float freq)
 {
+    // adjust the FFT spectrum
     float curMax = 0.;
     int maxIndex = 0;
     float s = 0;
