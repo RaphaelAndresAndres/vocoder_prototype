@@ -71,6 +71,7 @@ void shiftFreq(float freq)
         }
         newFFTOut[i][0] = FFTOut[lower][0] + (FFTOut[upper][0] - FFTOut[lower][0]) * (v - (float)lower);
         newFFTOut[i][1] = FFTOut[lower][1] + (FFTOut[upper][1] - FFTOut[lower][1]) * (v - (float)lower);
+        s += newFFTOut[i][0] + newFFTOut[i][1];
     }
     memcpy(FFTOut, newFFTOut, (FRAMES_PER_BUFFER / 2 + 1) * sizeof(fftwf_complex));
 }
